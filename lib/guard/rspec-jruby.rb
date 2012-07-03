@@ -40,6 +40,8 @@ module Guard
 
       begin
         yield container
+      rescue Exception => e
+        UI.error(e.message)
       ensure
         container.terminate
       end
