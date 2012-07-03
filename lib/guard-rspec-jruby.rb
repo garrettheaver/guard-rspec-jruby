@@ -1,0 +1,1 @@
+require 'guard/rspec-jruby'
