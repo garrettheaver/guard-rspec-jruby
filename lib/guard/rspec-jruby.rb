@@ -2,6 +2,7 @@ require 'java'
 require 'guard'
 require 'guard/guard'
 require 'guard/rspec'
+require 'thread'
 
 import org.jruby.Ruby
 import org.jruby.embed.ScriptingContainer
@@ -27,13 +28,29 @@ module Guard
 
     private
 
+    POOL_SIZE = 5
+
     def with_container
-      warmup unless @container
-      yield @container
-      warmup
+      container = pool.shift || make
+
+      begin
+        yield container
+      ensure
+        container.terminate
+      end
+
+      replenish!
     end
 
-    def warmup
+    def pool
+      @pool ||= []
+    end
+
+    def replenish!
+      Thread.new(POOL_SIZE - pool.count) { |n| n.times{ pool << make } }
+    end
+
+    def make
       container = ScriptingContainer.new(LocalContextScope::SINGLETHREAD)
       container.setCompatVersion(Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion)
 
@@ -42,7 +59,7 @@ module Guard
       script << "require 'rspec'"
       container.runScriptlet(script.join("\n"))
 
-      @container = container
+      container
     end
 
   end
