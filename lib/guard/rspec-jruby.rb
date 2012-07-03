@@ -17,20 +17,34 @@ module Guard
   end
 
   class RSpecJRubyRunner < ::Guard::RSpec::Runner
+
     def run_via_shell(paths, options)
+      with_container do |container|
+        container.put('arguments', paths)
+        container.runScriptlet("RSpec::Core::Runner.run(arguments)") == 0
+      end
+    end
+
+    private
+
+    def with_container
+      warmup unless @container
+      yield @container
+      warmup
+    end
+
+    def warmup
       container = ScriptingContainer.new(LocalContextScope::SINGLETHREAD)
       container.setCompatVersion(Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion)
 
-      cmd_parts = []
-      cmd_parts << "require 'rubygems'"
-      cmd_parts << "require 'bundler/setup'" if bundler?
-      cmd_parts << "require 'rspec'"
-      cmd_parts << "RSpec::Core::Runner.run(arguments)"
+      script = ["require 'rubygems'"]
+      script << "require 'bundler/setup'" if bundler?
+      script << "require 'rspec'"
+      container.runScriptlet(script.join("\n"))
 
-      container.put('arguments', paths)
-      success = container.runScriptlet(cmd_parts.join("\n"))
-      success == 0
+      @container = container
     end
+
   end
 
 end
