@@ -19,6 +19,13 @@ module Guard
 
   class RSpecJRubyRunner < ::Guard::RSpec::Runner
 
+    def initialize(options = {})
+      options = {
+        :pool_size => 5
+      }.merge(options)
+      super(options)
+    end
+
     def run_via_shell(paths, options)
       with_container do |container|
         container.put('arguments', paths)
@@ -27,8 +34,6 @@ module Guard
     end
 
     private
-
-    POOL_SIZE = 5
 
     def with_container
       container = pool.shift || make
@@ -47,7 +52,7 @@ module Guard
     end
 
     def replenish!
-      Thread.new(POOL_SIZE - pool.count) { |n| n.times{ pool << make } }
+      Thread.new(@options[:pool_size] - pool.count) { |n| n.times{ pool << make } }
     end
 
     def make
