@@ -27,10 +27,14 @@ module Guard
     end
 
     def run_via_shell(paths, options)
+      success = 1
+
       with_container do |container|
         container.put('arguments', paths)
-        container.runScriptlet("RSpec::Core::Runner.run(arguments)") == 0
+        success = container.runScriptlet("RSpec::Core::Runner.run(arguments)")
       end
+
+      success == 0
     end
 
     private
