@@ -1,10 +1,27 @@
 require 'tmpdir'
 require_relative '../../../lib/guard/rspec-jruby'
 
+import java.io.StringWriter
+
 module Guard
   describe RSpecJRubyRunner do
 
     let(:runner) { ::Guard::RSpecJRubyRunner.new }
+
+    class SpecScriptingContainer < ScriptingContainer
+      def initialize(*args)
+        super
+        setOutput(StringWriter.new)
+        setError(StringWriter.new)
+      end
+    end
+
+    before(:each) do
+      verbose, $VERBOSE = $VERBOSE, nil
+      Object.const_set("ScriptingContainer", SpecScriptingContainer)
+      Thread.stub(:new).and_return(nil)
+      $VERBOSE =  verbose
+    end
 
     it 'returns true from run_via_shell when the specs pass' do
       Dir.mktmpdir do |dir|
@@ -24,7 +41,7 @@ module Guard
       end
     end
 
-    it 'returns false from run_via_shell whent he specs fail' do
+    it 'returns false from run_via_shell when the specs fail' do
       Dir.mktmpdir do |dir|
         path = File.join(dir, 'failing_spec.rb')
 
@@ -42,7 +59,7 @@ module Guard
       end
     end
 
-    it 'gracefully handles error ocurring with the container' do
+    it 'gracefully handles errors ocurring within the container' do
       Dir.mktmpdir do |dir|
         path = File.join(dir, 'failing_spec.rb')
 
@@ -50,7 +67,7 @@ module Guard
           f.write <<-EOF
             describe 'a spec with a syntax error'
               it 'is desirable that the guard not crash when syntax errors occur' do
-                true.should be_true
+                true.should doesnt_matter
               end
             end
           EOF
