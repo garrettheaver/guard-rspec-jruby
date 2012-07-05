@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'guard'
   s.add_dependency 'guard-rspec'
 
-  s.files = Dir.glob('lib/**/*')
+  s.files = Dir.glob('lib/**/*') + %w[LICENCE]
   s.require_path = 'lib'
 
 end
