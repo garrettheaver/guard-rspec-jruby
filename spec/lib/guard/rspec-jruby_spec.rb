@@ -78,5 +78,10 @@ module Guard
       end
     end
 
+    it 'maintains a container pool size of five by default' do
+      Thread.should_receive(:new).with(5)
+      runner.replenish!
+    end
+
   end
 end

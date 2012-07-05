@@ -37,6 +37,10 @@ module Guard
       success == 0
     end
 
+    def replenish!
+      Thread.new(@options[:pool_size] - pool.count) { |n| n.times{ pool << make } }
+    end
+
     private
 
     def with_container
@@ -55,10 +59,6 @@ module Guard
 
     def pool
       @pool ||= []
-    end
-
-    def replenish!
-      Thread.new(@options[:pool_size] - pool.count) { |n| n.times{ pool << make } }
     end
 
     def make
