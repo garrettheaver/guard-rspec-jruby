@@ -19,58 +19,46 @@ module Guard
 
   class RSpecJRubyRunner < ::Guard::RSpec::Runner
 
-    def initialize(options = {})
-      options = {
-        :pool_size => 5
-      }.merge(options)
-      super(options)
-    end
-
     def run_via_shell(paths, options)
       success = 1
 
-      with_container do |container|
-        container.put('arguments', paths)
-        success = container.runScriptlet("RSpec::Core::Runner.run(arguments)")
+      with_container do |ct|
+        ct.put('arguments', paths)
+        success = ct.runScriptlet("RSpec::Core::Runner.run(arguments)")
       end
 
       success == 0
     end
 
-    def replenish!
-      Thread.new(@options[:pool_size] - pool.count) { |n| n.times{ pool << make } }
-    end
-
     private
 
     def with_container
-      container = pool.shift || make
-
       begin
-        yield container
+        yield @container ||= make
       rescue Exception => e
         UI.error(e.message)
       ensure
-        container.terminate
+        reset!(@container)
       end
-
-      replenish!
-    end
-
-    def pool
-      @pool ||= []
     end
 
     def make
       container = ScriptingContainer.new(LocalContextScope::SINGLETHREAD)
       container.setCompatVersion(Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion)
+      warmup(container)
+      container
+    end
 
+    def warmup(container)
       script = ["require 'rubygems'"]
       script << "require 'bundler/setup'" if bundler?
       script << "require 'rspec'"
       container.runScriptlet(script.join("\n"))
+    end
 
-      container
+    def reset!(container)
+      container.terminate
+      warmup(container)
     end
 
   end
