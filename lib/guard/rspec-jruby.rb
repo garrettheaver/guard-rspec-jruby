@@ -4,9 +4,9 @@ require 'guard/guard'
 require 'guard/rspec'
 require 'thread'
 
-import org.jruby.Ruby
-import org.jruby.embed.ScriptingContainer
-import org.jruby.embed.LocalContextScope
+java_import org.jruby.Ruby
+java_import org.jruby.embed.ScriptingContainer
+java_import org.jruby.embed.LocalContextScope
 
 module Guard
 
