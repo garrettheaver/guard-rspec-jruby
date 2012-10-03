@@ -1,7 +1,7 @@
 require 'tmpdir'
 require_relative '../../../lib/guard/rspec-jruby'
 
-import java.io.StringWriter
+java_import java.io.StringWriter
 
 module Guard
   describe RSpecJRubyRunner do
