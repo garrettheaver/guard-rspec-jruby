@@ -38,9 +38,7 @@ module Guard
       rescue Exception => e
         UI.error(e.message)
       ensure
-        puts "========= time to reset container =================="
         @container = reset!(@container)
-        # reset!(@container)
       end
     end
 
@@ -56,15 +54,11 @@ module Guard
       script = ["require 'rubygems'"]
       script << "require 'bundler/setup'" if bundler?
       script << "require 'rspec'"
-      puts "========= warmup#runScriptlet start =================="
       container.runScriptlet(script.join("\n"))
-      puts "========= warmup#runScriptlet end =================="
     end
 
     def reset!(container)
       container.terminate
-      puts "========= time to warmup container again =================="
-      # warmup(container)
       make
     end
 
