@@ -38,13 +38,14 @@ module Guard
       rescue Exception => e
         UI.error(e.message)
       ensure
-        reset!(@container)
+        @container = reset!(@container)
       end
     end
 
     def make
       container = ScriptingContainer.new(LocalContextScope::SINGLETHREAD)
       container.setCompatVersion(Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion)
+      container.setLoadPaths(Ruby.getGlobalRuntime.getGlobalVariables.get('$LOAD_PATH'))
       warmup(container)
       container
     end
@@ -58,7 +59,7 @@ module Guard
 
     def reset!(container)
       container.terminate
-      warmup(container)
+      make
     end
 
   end
