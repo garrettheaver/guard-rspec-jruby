@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
 
   s.authors     = ['Garrett Heaver']
-  s.email       = ['garrett@iterationfour.com']
+  s.email       = ['open.source@iterationfour.com']
   s.homepage    = 'http://github.com/garrettheaver/guard-rspec-jruby'
   s.description = 'A Guard::RSpec extension to improve performance on JRuby'
   s.summary     = 'Guard::RSpec JRuby extension'
