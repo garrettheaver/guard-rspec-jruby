@@ -13,4 +13,5 @@ Please direct any helpful suggestions my way and any complaints to /dev/null
 Thanks to Joe Kutner (http://github.com/jkutner) for guard-jruby-rspec upon which some of this extensions ideas are based
 
 --
-G
+[![Build Status](https://travis-ci.org/garrettheaver/guard-rspec-jruby.png)](https://travis-ci.org/garrettheaver/guard-rspec-jruby)
+
