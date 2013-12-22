@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rspec'
   s.add_dependency 'guard'
   s.add_dependency 'guard-rspec'
+  s.add_dependency 'rake'
 
   s.files = Dir.glob('lib/**/*') + %w[LICENCE]
   s.require_path = 'lib'

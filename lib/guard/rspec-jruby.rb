@@ -43,15 +43,16 @@ module Guard
     end
 
     def make
-      container = ScriptingContainer.new(LocalContextScope::SINGLETHREAD)
-      container.setCompatVersion(Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion)
-      warmup(container)
-      container
+      ScriptingContainer.new(LocalContextScope::SINGLETHREAD).tap do |c|
+        v = Ruby.getGlobalRuntime.getInstanceConfig.getCompatVersion
+        c.setCompatVersion(v)
+        warmup(c)
+      end
     end
 
     def warmup(container)
       script = ["require 'rubygems'"]
-      script << "require 'bundler/setup'" if bundler?
+      script << "require 'bundler/setup'" if defined?(::Bundler)
       script << "require 'rspec'"
       container.runScriptlet(script.join("\n"))
     end

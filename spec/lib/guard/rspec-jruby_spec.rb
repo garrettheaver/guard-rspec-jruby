@@ -30,13 +30,13 @@ module Guard
           f.write <<-EOF
             describe 'a passing spec' do
               it 'is true that true is true' do
-                true.should be_true
+                expect(true).to eq(true)
               end
             end
           EOF
         end
 
-        runner.run_via_shell([path], {}).should be_true
+        expect(runner.run_via_shell([path], {})).to eq(true)
       end
     end
 
@@ -48,13 +48,13 @@ module Guard
           f.write <<-EOF
             describe 'a failing spec' do
               it 'is false that false is true' do
-                false.should be_true
+                expect(false).to eq(true)
               end
             end
           EOF
         end
 
-        runner.run_via_shell([path], {}).should be_false
+        expect(runner.run_via_shell([path], {})).to eq(false)
       end
     end
 
@@ -66,14 +66,14 @@ module Guard
           f.write <<-EOF
             describe 'a spec with a syntax error'
               it 'is desirable that the guard not crash when syntax errors occur' do
-                true.should doesnt_matter
+                expect(true).to not_matter
               end
             end
           EOF
         end
 
-        UI.should_receive(:error).with(/SyntaxError/)
-        runner.run_via_shell([path], {}).should be_false
+        expect(UI).to receive(:error).with(/SyntaxError/)
+        expect(runner.run_via_shell([path], {})).to eq(false)
       end
     end
 
