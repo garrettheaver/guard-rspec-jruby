@@ -1,6 +1,5 @@
 require 'java'
 require 'guard'
-require 'guard/guard'
 require 'guard/rspec'
 require 'thread'
 

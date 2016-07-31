@@ -19,7 +19,7 @@ module Guard
     before(:each) do
       verbose, $VERBOSE = $VERBOSE, nil
       Object.const_set("ScriptingContainer", SpecScriptingContainer)
-      $VERBOSE =  verbose
+      $VERBOSE = verbose
     end
 
     it 'returns true from run_via_shell when the specs pass' do
