@@ -1,6 +1,10 @@
 ## Guard::RSpec::JRuby
 [![Build Status](https://travis-ci.org/garrettheaver/guard-rspec-jruby.svg?branch=master)](https://travis-ci.org/garrettheaver/guard-rspec-jruby)
 
+## Warning
+This project has pretty much been abandoned and has not seen active development for some time. It may however still be of some use and I have brought it up to date with JRuby-9.1.2 (specs pass) but it is not being actively maintained or used by me.
+
+## Overview
 We all love Guard::RSpec and it works wonders on MRI but exec'ing or system'ing with JRuby means spinning up a whole new JVM which takes far too long.
 
 In short, this plugin replaces the Guard `run_via_shell` method and executes your specs in a JRuby `ScriptingContainer`. Even the setup on these can be too slow so we keep the container "warmed up" and ready to go after each run. The net result is that spec runs are virtually instant, just like on MRI.
